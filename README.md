@@ -1,4 +1,4 @@
-# TP-Intro-Software-Teclas
+# TP Introducción al desarrollo de software
 
 ### Integrantes:
 
