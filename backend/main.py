@@ -1,11 +1,13 @@
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 import os
+from flask_cors import CORS
 from models import db, Usuario, Pelicula, UsuarioPeliculas
 
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app)
 port = 5000
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("SQLALCHEMY_DATABASE_URI")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
