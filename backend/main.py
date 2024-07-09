@@ -36,12 +36,13 @@ def obtener_usuarios():
                 "nombre": usuario.nombre,
                 "edad": usuario.edad,
                 "genero": usuario.genero,
+                "id_usuario_peliculas": usuario.id_usuario_peliculas,
             }
             usuarios_data.append(usuario_data)
-        return jsonify(usuarios_data)
+        return jsonify(usuarios_data), 200
     except Exception as error:
         print(error)
-        return jsonify({"mensaje": "No hay usuarios."})
+        return jsonify({"mensaje": error}), 500
 
 
 @app.route("/usuarios", methods=["POST"])
@@ -51,18 +52,26 @@ def nuevo_usuario():
         nombre = data.get("nombre")
         edad = data.get("edad")
         genero = data.get("genero")
-        nuevo_usuario = Usuario(nombre=nombre, edad=edad, genero=genero)
+        id_usuario_peliculas = data.get("id_usuario_peliculas")
+        nuevo_usuario = Usuario(
+            nombre=nombre,
+            edad=edad,
+            genero=genero,
+            id_usuario_peliculas=id_usuario_peliculas,
+        )
         db.session.add(nuevo_usuario)
         db.session.commit()
-        return jsonify(
-            {
-                "usuario": {
+        return (
+            jsonify(
+                {
                     "id": nuevo_usuario.id,
                     "nombre": nuevo_usuario.nombre,
                     "edad": nuevo_usuario.edad,
                     "genero": nuevo_usuario.genero,
+                    "id_usuario_peliculas": nuevo_usuario.id_usuario_peliculas,
                 }
-            }
+            ),
+            201,
         )
     except Exception as error:
         print(error)
@@ -72,44 +81,69 @@ def nuevo_usuario():
 @app.route("/usuarios/<id_usuario>")
 def obtener_usuario(id_usuario):
     try:
-        usuario = Usuario.query.get(id_usuario)
+        usuario = db.session.query(Usuario).filter_by(id=id_usuario).one_or_none()
         usuario_data = {
             "id": usuario.id,
             "nombre": usuario.nombre,
             "edad": usuario.edad,
             "genero": usuario.genero,
+            "id_usuario_peliculas": usuario.id_usuario_peliculas,
         }
-        return jsonify(usuario_data)
+        return jsonify(usuario_data), 200
     except:
-        return jsonify({"mensaje": "El usuario no existe"})
+        return jsonify({"mensaje": "El usuario no existe"}), 404
 
 
 @app.route("/usuarios/<id_usuario>", methods=["PUT"])
 def modificar_usuario_id(id_usuario):
     try:
         usuario = db.session.query(Usuario).filter_by(id=id_usuario).one_or_none()
+        # usuario = Usuario.query.get(id_usuario)
         data = request.json
 
-        usuario.nombre = data.get("nombre")
-        usuario.edad = data.get("edad")
-        usuario.genero = data.get("genero")
+        # Los if son porque si le queres cambiar solo un campo te intenta poner el resto en null
+        if "nombre" in data:
+            usuario.nombre = data.get("nombre")
+        if "edad" in data:
+            usuario.edad = data.get("edad")
+        if "genero" in data:
+            usuario.genero = data.get("genero")
+        if "id_usuario_peliculas" in data:
+            usuario.id_usuario_peliculas = data.get("id_usuario_peliculas")
+
         db.session.commit()
-        return jsonify(
-            {
-                "id": id_usuario,
-                "nombre": data.get("nombre"),
-                "edad": data.get("edad"),
-                "genero": data.get("genero"),
-            }
-        )
+        return jsonify(data), 200
     except Exception as error:
         print(error)
-        return jsonify({"message": "No se pudo crear el usuario"}), 500
+        return jsonify({"message": "No se pudo modificar el usuario"}), 500
 
 
 @app.route("/usuarios/<id_usuario>", methods=["DELETE"])
 def eliminar_usuario_id(id_usuario):
-    return {"success": eliminar_usuario(id)}
+    try:
+        usuario = db.session.query(Usuario).filter_by(id=id_usuario).one_or_none()
+        if not usuario:
+            return jsonify({"message": "No se encontró el usuario"}), 404
+
+        db.session.delete(usuario)
+        db.session.commit()
+
+        return (
+            jsonify(
+                {
+                    "id": usuario.id,
+                    "nombre": usuario.nombre,
+                    "edad": usuario.edad,
+                    "genero": usuario.genero,
+                    "id_usuario_peliculas": usuario.id_usuario_peliculas,
+                }
+            ),
+            200,
+        )
+
+    except Exception as error:
+        print(error)
+        return jsonify({"message": error}), 500
 
 
 @app.route("/peliculas")
