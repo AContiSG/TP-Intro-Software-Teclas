@@ -36,7 +36,6 @@ def obtener_usuarios():
                 "nombre": usuario.nombre,
                 "edad": usuario.edad,
                 "genero": usuario.genero,
-                "id_usuario_peliculas": usuario.id_usuario_peliculas,
             }
             usuarios_data.append(usuario_data)
         return jsonify(usuarios_data), 200
@@ -52,12 +51,10 @@ def nuevo_usuario():
         nombre = data.get("nombre")
         edad = data.get("edad")
         genero = data.get("genero")
-        id_usuario_peliculas = data.get("id_usuario_peliculas")
         nuevo_usuario = Usuario(
             nombre=nombre,
             edad=edad,
-            genero=genero,
-            id_usuario_peliculas=id_usuario_peliculas,
+            genero=genero
         )
         db.session.add(nuevo_usuario)
         db.session.commit()
@@ -67,8 +64,7 @@ def nuevo_usuario():
                     "id": nuevo_usuario.id,
                     "nombre": nuevo_usuario.nombre,
                     "edad": nuevo_usuario.edad,
-                    "genero": nuevo_usuario.genero,
-                    "id_usuario_peliculas": nuevo_usuario.id_usuario_peliculas,
+                    "genero": nuevo_usuario.genero
                 }
             ),
             201,
@@ -86,8 +82,7 @@ def obtener_usuario(id_usuario):
             "id": usuario.id,
             "nombre": usuario.nombre,
             "edad": usuario.edad,
-            "genero": usuario.genero,
-            "id_usuario_peliculas": usuario.id_usuario_peliculas,
+            "genero": usuario.genero
         }
         return jsonify(usuario_data), 200
     except:
@@ -108,9 +103,6 @@ def modificar_usuario_id(id_usuario):
             usuario.edad = data.get("edad")
         if "genero" in data:
             usuario.genero = data.get("genero")
-        if "id_usuario_peliculas" in data:
-            usuario.id_usuario_peliculas = data.get("id_usuario_peliculas")
-
         db.session.commit()
         return jsonify(data), 200
     except Exception as error:
@@ -134,8 +126,7 @@ def eliminar_usuario_id(id_usuario):
                     "id": usuario.id,
                     "nombre": usuario.nombre,
                     "edad": usuario.edad,
-                    "genero": usuario.genero,
-                    "id_usuario_peliculas": usuario.id_usuario_peliculas,
+                    "genero": usuario.genero
                 }
             ),
             200,
@@ -211,7 +202,8 @@ def obtener_pelicula(id_pelicula):
             "nombre": pelicula.nombre,
             "director": pelicula.director,
             "año_estreno": pelicula.año_estreno,
-            "imagen": pelicula.imagen,
+            "genero":pelicula.genero,
+            "imagen": pelicula.imagen
         }
         return jsonify(pelicula_data)
     except Exception as error:
