@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pelicula</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" 
+        crossorigin="anonymous">
+    <style>
+        img {
+            background-color: dimgray;
+            aspect-ratio: 3/4;
+        }
+    </style>
+</head>
+
+<body data-bs-theme="dark">
+    <div class="container my-4">
+        <div class="row">
+            <div class="col-12 col-md-10 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <img src="" alt="" id="imagen" class="w-100">
+                            </div>
+                            <div class="col-6">
+                                <h2 id="nombre">Loading...</h2>
+                                <h4 id="director" class="text-decoration-underline"></h4>
+                                <h4 id="año_estreno" class="text-decoration-underline"></h4>
+                                <h4 id="genero" class="text-decoration-underline"></h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-danger" onclick="eliminar_pelicula()">Eliminar</button>
+                        <a id="btnEdit" class="btn btn-warning" href="/pelcula/edit">Editar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+
+        if (id === null) {
+            window.location.href = "/";
+        }
+
+        document.getElementById("btnEdit").setAttribute("href", `/pelicula/edit?id=${id}`)
+
+        function response_received(response) {
+            return response.json()
+        }
+
+        function parse_data(character) {
+            // const loading_message = document.getElementById("loading-message");
+            // loading_message.remove()
+
+            const nombre = document.getElementById("nombre");
+            nombre.innerText = pelicula.nombre;
+
+            const imagen = document.getElementById("imagen");
+            imagen.setAttribute("src", pelicula.imagen);
+
+            const director = document.getElementById("director");
+            director.innerText = pelicula.director;
+
+            const año_estreno = document.getElementById("año_estreno");
+            año_estreno.innerText = pelicula.año_estreno;
+
+            const genero = document.getElementById("genero");
+            genero.innerText = pelicula.genero;
+        }
+
+        function handle_error(error) {
+            console.log("Error!", error)
+        }
+
+        fetch(`http://localhost:5000/peliculas/${id}`)
+            .then(response_received)
+            .then(parse_data)
+            .catch(handle_error)
+
+
+        function delete_response(data) {
+            if (data.success) {
+                alert("Pelicula eliminada exitosamente")
+                window.location.href = "/";
+            } else {
+                alert("Ocurrió un error. Intente de nuevo.")
+            }
+        }
+
+        function eliminar_pelicula() {
+            const confirmation = confirm(`Estas seguro de eliminar la pelicula ${id_pelicula}?`)
+            if (!confirmation) {
+                return;
+            }
+
+            fetch(
+                `http://localhost:5000/peliculas/${id}`,
+                { method: "DELETE" }
+            )
+                .then((res) => res.json()) // === response_received
+                .then(delete_response)
+                .catch(handle_error)
+        }
+    </script>
+</body>
+
+</html>
