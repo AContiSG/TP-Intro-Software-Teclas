@@ -44,6 +44,25 @@ def obtener_usuarios():
         return jsonify({"mensaje": error}), 500
 
 
+@app.route("/usuarios/<id_usuario>")
+def obtener_usuario_id(id_usuario):
+    try:
+        usuario = db.session.query(Usuario).filter_by(id=id_usuario).one_or_none()
+        if not usuario:
+            return jsonify({"message": "No se encontró el usuario"}), 404
+
+        usuario_data = {
+            "id": usuario.id,
+            "nombre": usuario.nombre,
+            "edad": usuario.edad,
+            "genero": usuario.genero,
+        }
+        return jsonify(usuario_data), 200
+    except Exception as error:
+        print(error)
+        return jsonify({"mensaje": error}), 500
+
+
 @app.route("/usuarios", methods=["POST"])
 def nuevo_usuario():
     try:
@@ -51,11 +70,7 @@ def nuevo_usuario():
         nombre = data.get("nombre")
         edad = data.get("edad")
         genero = data.get("genero")
-        nuevo_usuario = Usuario(
-            nombre=nombre,
-            edad=edad,
-            genero=genero
-        )
+        nuevo_usuario = Usuario(nombre=nombre, edad=edad, genero=genero)
         db.session.add(nuevo_usuario)
         db.session.commit()
         return (
@@ -64,29 +79,14 @@ def nuevo_usuario():
                     "id": nuevo_usuario.id,
                     "nombre": nuevo_usuario.nombre,
                     "edad": nuevo_usuario.edad,
-                    "genero": nuevo_usuario.genero
+                    "genero": nuevo_usuario.genero,
                 }
             ),
             201,
         )
     except Exception as error:
         print(error)
-        return jsonify({"message": "No se pudo crear el usuario"}), 500
-
-
-@app.route("/usuarios/<id_usuario>")
-def obtener_usuario(id_usuario):
-    try:
-        usuario = db.session.query(Usuario).filter_by(id=id_usuario).one_or_none()
-        usuario_data = {
-            "id": usuario.id,
-            "nombre": usuario.nombre,
-            "edad": usuario.edad,
-            "genero": usuario.genero
-        }
-        return jsonify(usuario_data), 200
-    except:
-        return jsonify({"mensaje": "El usuario no existe"}), 404
+        return jsonify({"mensaje": error}), 500
 
 
 @app.route("/usuarios/<id_usuario>", methods=["PUT"])
@@ -107,7 +107,7 @@ def modificar_usuario_id(id_usuario):
         return jsonify(data), 200
     except Exception as error:
         print(error)
-        return jsonify({"message": "No se pudo modificar el usuario"}), 500
+        return jsonify({"mensaje": error}), 500
 
 
 @app.route("/usuarios/<id_usuario>", methods=["DELETE"])
@@ -126,7 +126,7 @@ def eliminar_usuario_id(id_usuario):
                     "id": usuario.id,
                     "nombre": usuario.nombre,
                     "edad": usuario.edad,
-                    "genero": usuario.genero
+                    "genero": usuario.genero,
                 }
             ),
             200,
@@ -138,7 +138,7 @@ def eliminar_usuario_id(id_usuario):
 
 
 @app.route("/peliculas")
-def mostrar_peliculas():
+def obtener_peliculas():
     try:
         peliculas = Pelicula.query.all()
         peliculas_data = []
@@ -152,10 +152,31 @@ def mostrar_peliculas():
                 "imagen": pelicula.imagen,
             }
             peliculas_data.append(pelicula_data)
-        return jsonify(peliculas_data)
+        return jsonify(peliculas_data), 200
     except Exception as error:
         print(error)
-        return jsonify({"mensaje": "No hay peliculas."})
+        return jsonify({"mensaje": error}), 500
+
+
+@app.route("/peliculas/<id_pelicula>")
+def obtener_pelicula_id(id_pelicula):
+    try:
+        pelicula = db.session.query(Pelicula).filter_by(id=id_pelicula).one_or_none()
+        if not pelicula:
+            return jsonify({"message": "No se encontró la pelicula"}), 404
+
+        pelicula_data = {
+            "id": pelicula.id,
+            "nombre": pelicula.nombre,
+            "director": pelicula.director,
+            "año_estreno": pelicula.año_estreno,
+            "genero": pelicula.genero,
+            "imagen": pelicula.imagen,
+        }
+        return jsonify(pelicula_data), 200
+    except Exception as error:
+        print(error)
+        return jsonify({"mensaje": error}), 500
 
 
 @app.route("/peliculas", methods=["POST"])
@@ -176,9 +197,9 @@ def nueva_pelicula():
         )
         db.session.add(nueva_pelicula)
         db.session.commit()
-        return jsonify(
-            {
-                "pelicula": {
+        return (
+            jsonify(
+                {
                     "id": nueva_pelicula.id,
                     "nombre": nueva_pelicula.nombre,
                     "director": nueva_pelicula.director,
@@ -186,51 +207,65 @@ def nueva_pelicula():
                     "genero": nueva_pelicula.genero,
                     "imagen": nueva_pelicula.imagen,
                 }
-            }
+            ),
+            201,
         )
     except Exception as error:
         print(error)
-        return jsonify({"message": "No se pudo crear la pelicula"}), 500
-
-
-@app.route("/peliculas/<id_pelicula>")
-def obtener_pelicula(id_pelicula):
-    try:
-        pelicula = Pelicula.query.get(id_pelicula)
-        pelicula_data = {
-            "id": pelicula.id,
-            "nombre": pelicula.nombre,
-            "director": pelicula.director,
-            "año_estreno": pelicula.año_estreno,
-            "genero":pelicula.genero,
-            "imagen": pelicula.imagen
-        }
-        return jsonify(pelicula_data)
-    except Exception as error:
-        print(error)
-        return jsonify({"mensaje": "La pelicula no existe"})
+        return jsonify({"mensaje": error}), 500
 
 
 @app.route("/peliculas/<id_pelicula>", methods=["PUT"])
-def modificar_pelicula(id_pelicula):
-    nombre = request.json.get("nombre")
-    director = request.json.get("director")
-    año_estreno = request.json.get("año_estreno")
-    genero = request.json.get("genero")
-    imagen = request.json.get("imagen")
-    pelicula = {
-        "nombre": nombre,
-        "director": director,
-        "año_estreno": año_estreno,
-        "genero": genero,
-        "imagen": imagen,
-    }
-    return {"success": modificar_usuario(pelicula), "id": id}
+def modificar_pelicula_id(id_pelicula):
+    try:
+        pelicula = db.session.query(Pelicula).filter_by(id=id_pelicula).one_or_none()
+        data = request.json
+
+        # Los if son porque si le queres cambiar solo un campo te intenta poner el resto en null
+        if "pelicula" in data:
+            pelicula.nombre = data.get("nombre")
+        if "director" in data:
+            pelicula.director = data.get("director")
+        if "genero" in data:
+            pelicula.genero = data.get("genero")
+        if "año_estreno" in data:
+            pelicula.año_estreno = data.get("año_estreno")
+        if "imagen" in data:
+            pelicula.imagen = data.get("imagen")
+
+        db.session.commit()
+        return jsonify(data), 200
+    except Exception as error:
+        print(error)
+        return jsonify({"mensaje": error}), 500
 
 
 @app.route("/peliculas/<id_pelicula>", methods=["DELETE"])
 def eliminar_pelicula_id(id_pelicula):
-    return {"success": eliminar_pelicula(id)}
+    try:
+        pelicula = db.session.query(Pelicula).filter_by(id=id_pelicula).one_or_none()
+        if not pelicula:
+            return jsonify({"message": "No se encontró la pelicula"}), 404
+
+        db.session.delete(pelicula)
+        db.session.commit()
+
+        return (
+            jsonify(
+                {
+                    "id": pelicula.id,
+                    "nombre": pelicula.nombre,
+                    "director": pelicula.director,
+                    "año_estreno": pelicula.año_estreno,
+                    "genero": pelicula.genero,
+                    "imagen": pelicula.imagen,
+                }
+            ),
+            200,
+        )
+    except Exception as error:
+        print(error)
+        return jsonify({"mensaje": error}), 500
 
 
 if __name__ == "__main__":
