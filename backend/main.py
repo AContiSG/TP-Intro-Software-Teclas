@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 import os
 from flask_cors import CORS
-from models import db, Usuario, Pelicula, UsuarioPeliculas
+from models import db, Usuario, Pelicula, Reseña
 
 load_dotenv()
 
@@ -20,8 +20,16 @@ def login():
                 <h1>Welcome to my API</h1>
                 <a href="/usuarios">Ver todos los usuarios</a>
                 <a href="/peliculas">Ver todas las peliculas</a>
+                <a href="/reseñas">Ver todas las reseñas</a>
               </body>
               </html>
+"""
+
+
+"""
+
+------------------------------------- Usuarios -------------------------------------
+
 """
 
 
@@ -96,7 +104,7 @@ def modificar_usuario_id(id_usuario):
         # usuario = Usuario.query.get(id_usuario)
         data = request.json
 
-        # Los if son porque si le queres cambiar solo un campo te intenta poner el resto en null
+        # Los if son porque si la request no tiene todos los campos completos, los que no están los va a modificar poniendoles null
         if "nombre" in data:
             usuario.nombre = data.get("nombre")
         if "edad" in data:
@@ -135,6 +143,13 @@ def eliminar_usuario_id(id_usuario):
     except Exception as error:
         print(error)
         return jsonify({"message": error}), 500
+
+
+"""
+
+------------------------------------- Peliculas -------------------------------------
+
+"""
 
 
 @app.route("/peliculas")
@@ -221,7 +236,7 @@ def modificar_pelicula_id(id_pelicula):
         pelicula = db.session.query(Pelicula).filter_by(id=id_pelicula).one_or_none()
         data = request.json
 
-        # Los if son porque si le queres cambiar solo un campo te intenta poner el resto en null
+        # Los if son porque si la request no tiene todos los campos completos, los que no están los va a modificar poniendoles null
         if "pelicula" in data:
             pelicula.nombre = data.get("nombre")
         if "director" in data:
@@ -266,6 +281,138 @@ def eliminar_pelicula_id(id_pelicula):
     except Exception as error:
         print(error)
         return jsonify({"mensaje": error}), 500
+
+
+"""
+
+------------------------------------- Reseñas -------------------------------------
+
+"""
+
+
+@app.route("/reseñas")
+def obtener_reseñas():
+    try:
+        reseñas = Reseña.query.all()
+        reseñas_data = []
+        for reseña in reseñas:
+            reseña_data = {
+                "id": reseña.id,
+                "id_usuario": reseña.id_usuario,
+                "id_pelicula": reseña.id_pelicula,
+                "puntaje": reseña.puntaje,
+                "reseña_corta": reseña.reseña_corta,
+            }
+            reseñas_data.append(reseña_data)
+        return jsonify(reseñas_data), 200
+    except Exception as error:
+        print(error)
+        return jsonify({"mensaje": error}), 500
+
+
+@app.route("/reseñas/<id_resena>")
+def obtener_reseña_id(id_resena):
+    try:
+        reseña = db.session.query(Reseña).filter_by(id=id_resena).one_or_none()
+        if not reseña:
+            return jsonify({"message": "No se encontró la reseña"}), 404
+
+        reseña_data = {
+            "id": reseña.id,
+            "id_usuario": reseña.id_usuario,
+            "id_pelicula": reseña.id_pelicula,
+            "puntaje": reseña.puntaje,
+            "reseña_corta": reseña.reseña_corta,
+        }
+        return jsonify(reseña_data), 200
+    except Exception as error:
+        print(error)
+        return jsonify({"mensaje": error}), 500
+
+
+@app.route("/reseñas", methods=["POST"])
+def nueva_reseña():
+    try:
+        data = request.json
+        id_usuario = data.get("id_usuario")
+        id_pelicula = data.get("id_pelicula")
+        puntaje = data.get("puntaje")
+        reseña_corta = data.get("reseña_corta")
+        nueva_reseña = Reseña(
+            id_usuario=id_usuario,
+            id_pelicula=id_pelicula,
+            puntaje=puntaje,
+            reseña_corta=reseña_corta,
+        )
+
+        db.session.add(nueva_reseña)
+        db.session.commit()
+        return (
+            jsonify(
+                {
+                    "id": nueva_reseña.id,
+                    "id_usuario": nueva_reseña.id_usuario,
+                    "id_pelicula": nueva_reseña.id_pelicula,
+                    "puntaje": nueva_reseña.puntaje,
+                    "reseña_corta": nueva_reseña.reseña_corta,
+                }
+            ),
+            201,
+        )
+    except Exception as error:
+        print(error)
+        return jsonify({"mensaje": error}), 500
+
+
+@app.route("/reseñas/<id_resena>", methods=["PUT"])
+def modificar_reseña_id(id_resena):
+    try:
+        reseña = db.session.query(Reseña).filter_by(id=id_resena).one_or_none()
+        data = request.json
+
+        # Los if son porque si la request no tiene todos los campos completos, los que no están los va a modificar poniendoles null
+        if "id_usuario" in data:
+            reseña.id_usuario = data.get("id_usuario")
+        if "id_pelicula" in data:
+            reseña.id_pelicula = data.get("id_pelicula")
+        if "puntaje" in data:
+            reseña.puntaje = data.get("puntaje")
+        if "reseña_corta" in data:
+            reseña.reseña_corta = data.get("reseña_corta")
+
+        db.session.commit()
+        return jsonify(data), 200
+    except Exception as error:
+        print(error)
+        return jsonify({"mensaje": error}), 500
+
+
+@app.route("/reseñas/<id_resena>", methods=["DELETE"])
+def eliminar_reseña_id(id_resena):
+    try:
+        reseña = db.session.query(reseña).filter_by(id=id_resena).one_or_none()
+        if not reseña:
+            return jsonify({"message": "No se encontró la reseña"}), 404
+
+        db.session.delete(reseña)
+        db.session.commit()
+
+        return (
+            jsonify(
+                {
+                    "id": reseña.id,
+                    "id_usuario": reseña.id_usuario,
+                    "id_pelicula": reseña.id_pelicula,
+                    "puntaje": reseña.puntaje,
+                    "reseña_corta": reseña.reseña_corta,
+                }
+            ),
+            200,
+        )
+
+    except Exception as error:
+        print(error)
+        return jsonify({"message": error}), 500
 
 
 if __name__ == "__main__":

@@ -9,7 +9,10 @@ class Usuario(db.Model):
     nombre = db.Column(db.String(50), nullable=False)
     edad = db.Column(db.Integer, nullable=False)
     genero = db.Column(db.String(50), nullable=False)
-    peliculas = db.relationship('UsuarioPeliculas', backref='usuario', cascade='all, delete-orphan')
+    peliculas = db.relationship(
+        "Reseña", backref="usuario", cascade="all, delete-orphan"
+    )
+
 
 class Pelicula(db.Model):
     __tablename__ = "peliculas"
@@ -19,13 +22,15 @@ class Pelicula(db.Model):
     año_estreno = db.Column(db.Integer, nullable=False)
     genero = db.Column(db.String(50), nullable=False)
     imagen = db.Column(db.String(200), nullable=False)
-    usuarios = db.relationship('UsuarioPeliculas', backref='pelicula', cascade='all, delete-orphan')
+    usuarios = db.relationship(
+        "Reseña", backref="pelicula", cascade="all, delete-orphan"
+    )
 
 
-class UsuarioPeliculas(db.Model):
-    __tablename__ = "usuario_peliculas"
+class Reseña(db.Model):
+    __tablename__ = "reseñas"
     id = db.Column(db.Integer, primary_key=True)
     id_usuario = db.Column(db.Integer, db.ForeignKey("usuarios.id"), nullable=False)
     id_pelicula = db.Column(db.Integer, db.ForeignKey("peliculas.id"), nullable=False)
     puntaje = db.Column(db.Integer)
-    reseña = db.Column(db.String(200))
+    reseña_corta = db.Column(db.String(500))
