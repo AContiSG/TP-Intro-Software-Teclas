@@ -6,7 +6,7 @@ db = SQLAlchemy()
 class Usuario(db.Model):
     __tablename__ = "usuarios"
     id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(50), nullable=False)
+    nombre = db.Column(db.String(50), nullable=False, unique=True)
     edad = db.Column(db.Integer, nullable=False)
     genero = db.Column(db.String(50), nullable=False)
     peliculas = db.relationship(
@@ -17,7 +17,7 @@ class Usuario(db.Model):
 class Pelicula(db.Model):
     __tablename__ = "peliculas"
     id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(50), nullable=False)
+    nombre = db.Column(db.String(50), nullable=False, unique=True)
     director = db.Column(db.String(50), nullable=False)
     año_estreno = db.Column(db.Integer, nullable=False)
     genero = db.Column(db.String(50), nullable=False)
