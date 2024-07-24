@@ -71,6 +71,27 @@ def obtener_usuario_id(id_usuario):
         return jsonify({"mensaje": error}), 500
 
 
+@app.route("/usuarios/nombre/<nombre_usuario>")
+def obtener_usuario_nombre(nombre_usuario):
+    try:
+        usuario = (
+            db.session.query(Usuario).filter_by(nombre=nombre_usuario).one_or_none()
+        )
+        if not usuario:
+            return jsonify({"message": "No se encontró el usuario"}), 404
+
+        usuario_data = {
+            "id": usuario.id,
+            "nombre": usuario.nombre,
+            "edad": usuario.edad,
+            "genero": usuario.genero,
+        }
+        return jsonify(usuario_data), 200
+    except Exception as error:
+        print(error)
+        return jsonify({"mensaje": error}), 500
+
+
 @app.route("/usuarios", methods=["POST"])
 def nuevo_usuario():
     try:
