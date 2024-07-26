@@ -5,20 +5,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TP</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" 
-        crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body data-bs-theme="dark">
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <h1>Peliculas</h1>
-                <a href="/create" class="btn btn-success">Nueva pelicula</a>
-            </div>
-        </div>
+    <div class="header">
+      <h1>Reseñas</h1>
+      <a href="/create" class="btn btn-success">Nueva reseña</a>      
     </div>
+
+    <table class="table" id="reseñas-table">
+      <thead >
+        <tr>
+          <th>Imagen</th>
+          <th>Nombre</th>
+          <th>Año Estreno</th>
+          <th>Genero</th>
+          <th>Director</th>
+          <th>Puntaje</th>
+          <th>Review</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
 
     <div class="container">
         <div class="row g-4" id="peliculas">
@@ -35,29 +45,42 @@
             return response.json()
         }
 
-        function parse_data(content) {
-            const container = document.getElementById("peliculas");
+        async function  parse_data(content) {
+            const container = document.getElementById("reseñas-table").getElementsByTagName('tbody')[0];
+            console.log(container)
             for (let index = 0; index < content.length; index++) {
-                const item = document.createElement("div");
-                item.setAttribute("class", "col-6 col-md-4 col-lg-3 col-xl-2");
+              const tr = document.createElement("tr");
+              const pelicula_data = await fetch("http://localhost:5000/peliculas/"+content[index].id_pelicula) 
+              .then(response_received)   
+              .catch(request_error)
+              
+              const imagenTd = document.createElement("td");
+              const nombreTd = document.createElement("td");
+              const añoEstrenoTd = document.createElement("td");
+              const generoTd = document.createElement("td");
+              const directorTd = document.createElement("td");
+              const puntajeTd = document.createElement("td");
+              const reseñaTd = document.createElement("td");
+              const imagenPelicula = new Image();
+              imagenPelicula.src = pelicula_data.imagen;
+              imagenTd.append(imagenPelicula)
+              nombreTd.innerHTML = pelicula_data.nombre
+              añoEstrenoTd.innerHTML = pelicula_data.año_estreno
+              generoTd.innerHTML = pelicula_data.genero
+              directorTd.innerHTML = pelicula_data.director
+              puntajeTd.innerHTML = content[index].puntaje
+              reseñaTd.innerHTML = content[index].reseña_corta
 
-                const card = document.createElement("a");
-                card.setAttribute("class", "card text-decoration-none");
-                card.setAttribute("href", `/pelicula?id=${content[index].id}`);
+              tr.append(imagenTd);
+              tr.append(nombreTd);
+              tr.append(añoEstrenoTd);
+              tr.append(generoTd);
+              tr.append(directorTd);
+              tr.append(puntajeTd);
+              tr.append(reseñaTd);
 
-                const imagen = document.createElement("img");
-                imagen.setAttribute("class", "card-img-top");
-                imagen.setAttribute("src", content[index].imagen)
-
-                const card_body = document.createElement("div");
-                card_body.setAttribute("class", "card-body");
-
-                card_body.append(content[index].nombre);
-                card.append(imagen);
-                card.append(card_body);
-                item.append(card);
-
-                container.append(item);
+              console.log(pelicula_data)
+              container.append(tr);
             }
         }
 
@@ -66,7 +89,7 @@
             console.log(error);
         }
 
-        fetch("http://localhost:5000/peliculas") 
+        fetch("http://localhost:5000/reseñas") 
             .then(response_received)   
             .then(parse_data)       
             .catch(request_error)    
