@@ -1,0 +1,130 @@
+<!doctype html>
+ <html lang="en">
+   <head>
+     <meta charset="utf-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1">
+     <link rel="stylesheet" href="estilos.css">
+     <title>TP Intro</title>
+   </head>
+   <body>
+    <h1>Titulo de la pagina</h1>
+    <!-- Contenido de los Formularios -->
+    <div class="contenido-tab">
+        <!-- Iniciar Sesion -->
+        <div id="iniciar-sesion" class="container-form active">
+            <h1>Iniciar Sesión</h1>
+            <form onsubmit="loginSubmit()">
+                <div class="contenedor-input">
+                    <label>
+                        Usuario <span class="req">*</span>
+                    </label>
+                    <input type="text" required>
+                </div>
+                
+                <input type="submit" class="button button-block" value="Iniciar Sesión">
+            </form>
+            <p class="signup_link">No estas registrado? <a href="" onclick="openRegister(event)">Signup</a></p>
+        </div>
+
+        <!-- Registrarse -->
+        <div id="registrarse" class="container-form">
+            <h1>Registrarse</h1>
+            <form onsubmit="registerSubmit(event)">
+                <div class="fila-arriba">
+                    <div class="contenedor-input">
+                        <label>
+                            Nombre <span class="req">*</span>
+                        </label>
+                        <input name="nombre" type="text" required >
+                    </div>
+                </div>
+                <div class="contenedor-input">
+                    <label>
+                        Edad <span class="req">*</span>
+                    </label>
+                    <input name="edad" type="number" required>
+                </div>
+                <div class="contenedor-input">
+                    <label>
+                        Genero <span class="req">*</span>
+                    </label>
+                    <select name="genero" id="pelicula-select" required>
+                      <option value="">--Please choose an option--</option>
+                      <option value="masculino">Masculino</option>
+                      <option value="femenino">Femenino</option>
+                      <option value="otro">Otro</option>
+                    </select>
+                </div>
+                                
+                <input type="submit" class="button button-block" value="Registrarse">
+            </form>
+            <p class="signup_link">Ya esta registrado? <a href="" onclick="openLogin(event)">Login</a></p>
+        </div>
+    </div>
+    
+     
+     <script>
+
+    const loginSubmit = () => {
+        fetch('http://localhost:5000/usuarios', {
+            method: 'GET',
+        })
+        .then(Result => Result.json())
+        .then(data => {
+            console.log(data);
+            // your code comes here
+        })
+        .catch(errorMsg => {
+            console.log(errorMsg);
+        });
+    };
+
+    const registerSubmit = (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const formProps = Object.fromEntries(formData);
+      
+        fetch('http://localhost:5000/usuarios', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formProps)
+        })
+        .then(Result => Result.json())
+        .then(data => {
+            console.log(data);
+            // your code comes here
+        })
+        .catch(errorMsg => {
+            console.log(errorMsg);
+        });
+    };
+
+        async function getUsers() {
+          try { 
+            const response = await fetch("http://localhost:5000/usuarios");
+            
+            const json = response.json();
+            console.log(json);
+          } catch (error) {
+            console.error(error.message);
+          }
+        }
+        
+      
+        function openRegister(e){
+            e.preventDefault();
+            document.getElementById("registrarse").classList.add("active");
+            document.getElementById("iniciar-sesion").classList.remove("active");
+        }
+
+        function openLogin(e){
+            e.preventDefault();
+            document.getElementById("iniciar-sesion").classList.add("active");
+            document.getElementById("registrarse").classList.remove("active");
+        }
+     </script>
+   </body>
+ </html>
