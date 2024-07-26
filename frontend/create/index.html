@@ -12,66 +12,35 @@
     <div class="header">
       <h1>Peliculas</h1>
     </div>
+    
+    <div id="form_nueva_pelicula">
+    </div>
 
-    <form onsubmit="sendPelicula(event)">
-      <div class="contenedor-input">
-        <label>
-          nombre <span class="req">*</span>
-        </label>
-        <input name="nombre" type="text">
-      </div>
-      <div class="contenedor-input">
-        <label>
-          director <span class="req">*</span>
-        </label>
-        <input name="director" type="text">
-      </div>
-      <div class="contenedor-input">
-        <label>
-          año de estreno <span class="req">*</span>
-        </label>
-        <input name="año_estreno" type="number">
-      </div>
-      <div class="contenedor-input">
-        <label>
-          genero <span class="req">*</span>
-        </label>
-        <input name="genero" type="text">
-      </div>
-      <div class="contenedor-input">
-        <label>
-          imagen <span class="req">*</span>
-        </label>
-        <input type="file" accept="image/*" name="imagen" onchange="imageUploaded()">
-      </div>
-      <input type="submit" class="" value="Iniciar Sesión">
-      <a href="/">
-        <input type="button" value="cancel" />
-      </a>
-    </form>
+    <h3>Nueva Reseña</h3>
 
     <form onsubmit="sendReseña(event)">
       <div class="contenedor-input">
         <label>
-          reseña <span class="req">*</span>
+          Pelicula <span class="req">*</span>
         </label>
-        <select name="pelicula" id="pelicula-select" required>
+        <select name="id_pelicula" id="pelicula-select" onChange="loadFormMovie(false)" required>
           <option value="">--Please choose an option--</option>
         </select>
+        <span onclick="loadFormMovie(true)">Cargar nueva pelicula</span>
+      </div>
+      
+      <div class="contenedor-input">
+        <label>
+          Puntaje <span class="req">*</span>
+        </label>
+        <input type="text" name="puntaje" required>
       </div>
 
       <div class="contenedor-input">
         <label>
-          puntaje <span class="req">*</span>
+          Reseña <span class="req">*</span>
         </label>
-        <input type="text" name="puntaje">
-      </div>
-
-      <div class="contenedor-input">
-        <label>
-          reseña <span class="req">*</span>
-        </label>
-        <input type="text" name="reseña_corta">
+        <input type="text" name="reseña_corta" required>
       </div>
 
       <input type="submit" class="" value="Iniciar Sesión">
@@ -81,7 +50,57 @@
     </form>
 
     <script>
+      if(!localStorage.getItem("userId")){
+        window.location.replace("http://localhost:8000/login");
+      }
+      loadMoviesOptions();
       let base64String = "";
+    
+      function loadFormMovie(activeForm){
+        const selectPelicula = document.getElementById("pelicula-select");
+        const container = document.getElementById("form_nueva_pelicula");
+        if(activeForm){
+          selectPelicula.selectedIndex = 0;
+          container.innerHTML = `
+          <h3>Nueva Pelicula</h3>
+          <form onsubmit="sendPelicula(event)">
+            <div class="contenedor-input">
+              <label>
+                nombre <span class="req">*</span>
+              </label>
+              <input name="nombre" type="text">
+            </div>
+            <div class="contenedor-input">
+              <label>
+                director <span class="req">*</span>
+              </label>
+              <input name="director" type="text">
+            </div>
+            <div class="contenedor-input">
+              <label>
+                año de estreno <span class="req">*</span>
+              </label>
+              <input name="año_estreno" type="number">
+            </div>
+            <div class="contenedor-input">
+              <label>
+                genero <span class="req">*</span>
+              </label>
+              <input name="genero" type="text">
+            </div>
+            <div class="contenedor-input">
+              <label>
+                imagen <span class="req">*</span>
+              </label>
+              <input type="file" accept="image/*" name="imagen" onchange="imageUploaded()">
+            </div>
+            <input type="submit" value="Cargar pelicula">
+            <input type="button" value="Cancel"  onClick="loadFormMovie(false)">
+          </form>`
+        }else{
+          container.innerHTML =""
+        }
+      }
 
       function resizeImage(base64Str, maxWidth = 400, maxHeight = 350) {
         return new Promise((resolve) => {
@@ -150,11 +169,13 @@
         console.log(error);
       }
       
-      fetch("http://localhost:5000/peliculas") 
+      function loadMoviesOptions(){
+        fetch("http://localhost:5000/peliculas") 
         .then(response_received)   
         .then(parse_data)       
         .catch(request_error)
-          
+      }
+                
       const sendPelicula = (e) => {
         console.log(base64String.length)
         e.preventDefault();
@@ -175,7 +196,8 @@
         })
         .then(Result => Result.json())
         .then(data => {
-          console.log(data);    
+          loadMoviesOptions();
+          loadFormMovie(false)
           // your code comes here
         })
         .catch(errorMsg => {
@@ -185,11 +207,11 @@
 
       const sendReseña = (e) => {
         e.preventDefault();
+        const formData = new FormData(e.target);
+        const formProps = Object.fromEntries(formData);
         let data = {
-          id_usuario: 1,
-          id_pelicula: 9,
-          puntaje: 1,
-          reseña_corta: "test",
+          ...formProps,
+          id_usuario: localStorage.getItem("userId"),
         }
         fetch('http://localhost:5000/reseñas', {
           method: 'POST',
