@@ -21,7 +21,7 @@ class Pelicula(db.Model):
     director = db.Column(db.String(50), nullable=False)
     año_estreno = db.Column(db.Integer, nullable=False)
     genero = db.Column(db.String(50), nullable=False)
-    imagen = db.Column(db.String(200), nullable=False)
+    imagen = db.Column(db.String(30000), nullable=False)
     usuarios = db.relationship(
         "Reseña", backref="pelicula", cascade="all, delete-orphan"
     )
