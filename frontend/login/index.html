@@ -13,12 +13,12 @@
         <!-- Iniciar Sesion -->
         <div id="iniciar-sesion" class="container-form active">
             <h1>Iniciar Sesión</h1>
-            <form onsubmit="loginSubmit()">
+            <form onsubmit="loginSubmit(event)">
                 <div class="contenedor-input">
                     <label>
                         Usuario <span class="req">*</span>
                     </label>
-                    <input type="text" required>
+                    <input type="text" name="userName" required>
                 </div>
                 
                 <input type="submit" class="button button-block" value="Iniciar Sesión">
@@ -62,21 +62,27 @@
         </div>
     </div>
     
-     
-     <script>
+    
+    <script>
+    const loginSubmit = (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const formProps = Object.fromEntries(formData);
 
-    const loginSubmit = () => {
-        fetch('http://localhost:5000/usuarios', {
-            method: 'GET',
-        })
-        .then(Result => Result.json())
-        .then(data => {
-            console.log(data);
-            // your code comes here
-        })
-        .catch(errorMsg => {
-            console.log(errorMsg);
-        });
+      fetch('http://localhost:5000/usuarios/nombre/'+formProps.userName)
+      .then(Result => Result.json())
+      .then(data => {
+        if(data.id){
+          localStorage.setItem("userId", data.id);
+          localStorage.setItem("userNombre", data.nombre);
+          localStorage.setItem("userEdad", data.edad);
+          localStorage.setItem("userGenero", data.genero);
+          window.location.replace("http://localhost:8000/");
+        }
+      })
+      .catch(errorMsg => {
+        console.log(errorMsg);
+      });
     };
 
     const registerSubmit = (e) => {
@@ -94,8 +100,13 @@
         })
         .then(Result => Result.json())
         .then(data => {
-            console.log(data);
-            // your code comes here
+          if(data.id){
+            localStorage.setItem("userId", data.id);
+            localStorage.setItem("userNombre", data.nombre);
+            localStorage.setItem("userEdad", data.edad);
+            localStorage.setItem("userGenero", data.genero);
+            window.location.replace("http://localhost:8000/");
+          }
         })
         .catch(errorMsg => {
             console.log(errorMsg);

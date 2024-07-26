@@ -10,7 +10,10 @@
 
 <body data-bs-theme="dark">
     <div class="header">
-      <h1>Reseñas</h1>
+      <div>
+        <h2>Reseñas de <span id="nombre_user"></span></h2>
+        <span onclick="logout()">LogOut</span>
+      </div>
       <a href="/create" class="btn btn-success">Nueva reseña</a>      
     </div>
 
@@ -41,6 +44,17 @@
     </script>
 
     <script>
+      if(localStorage.getItem("userId")){
+        document.getElementById("nombre_user").innerHTML = localStorage.getItem("userNombre");
+      }else{
+        window.location.replace("http://localhost:8000/login");
+      }
+      
+      function logout(){
+        localStorage.clear();
+        window.location.replace("http://localhost:8000/login");
+      }
+
         function response_received(response) {
             return response.json()
         }
@@ -94,6 +108,7 @@
             .then(parse_data)       
             .catch(request_error)    
     </script>
+    <script src="store.js"/>
 </body>
 
 </html>
