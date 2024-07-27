@@ -1,10 +1,81 @@
+body {
+  background-color: #212529;
+}
+
+h1,
+h2 {
+  text-align: center;
+  color: white;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.nameUser {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+  .logoutButton {
+    cursor: pointer;
+    color: white;
+  }
+  .logoutButton:hover {
+    color: black;
+  }
+}
+
+.tableContainer {
+  display: flex;
+  justify-content: center;
+  max-width: 900px;
+  width: 100%;
+}
+
 .table {
-  background-color: aqua;
+  width: 100%;
+  background-color: #e4fff8;
+  thead {
+    background-color: #a6b9b4;
+  }
+  tr:nth-child(even) {
+    background-color: #beefe2;
+  }
+  td {
+    padding: 10px;
+    text-align: center;
+  }
 }
 
 .header {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 900px;
+}
+
+.button {
+  border-radius: 5px;
+  padding: 15px;
+  background: #1ab188;
+  color: #fff;
+  text-decoration: none;
+}
+
+.button:hover {
+  background: #106b53;
+}
+
+.buttonIconContainer{
+  gap: 20px;
+}
+
+.buttonIcon{
+  color:#1ab188;
+  cursor: pointer;
 }

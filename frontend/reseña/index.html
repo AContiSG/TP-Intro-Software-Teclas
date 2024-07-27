@@ -3,49 +3,48 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TP</title>
+    <title>CineCritics</title>
     <link rel="stylesheet" href="style.css" />
   </head>
 
-  <body data-bs-theme="dark">
-    <div class="header">
-      <h1>Peliculas</h1>
+  <body>
+    <h1>CineCritics</h1>
+    <div class="container">
+      <div id="form_nueva_pelicula"></div>
+
+      <h2>Nueva Reseña</h2>
+
+      <form class="form" onsubmit="sendReseña(event)">
+        <div class="contenedor-input">
+          <label> Pelicula<span class="req">*</span> </label>
+          <select
+            name="id_pelicula"
+            id="pelicula-select"
+            onChange="loadFormMovie(false)"
+            required
+          >
+            <option value="">--Please choose an option--</option>
+          </select>
+          <span onclick="loadFormMovie(true)">Cargar nueva pelicula</span>
+        </div>
+
+        <div class="contenedor-input">
+          <label> Puntaje<span class="req">*</span> </label>
+          <input type="text" name="puntaje" id="puntaje" required />
+        </div>
+
+        <div class="contenedor-input">
+          <label> Reseña<span class="req">*</span> </label>
+          <input type="text" name="reseña_corta" id="reseña_corta" required />
+        </div>
+        <div class="contenedor-buttons">
+          <input class="button" type="submit" id="button_submit" value="Crear reseña" />
+          <a href="/">
+            <input class="button" type="button" value="cancel" />
+          </a>
+        </div>
+      </form>
     </div>
-
-    <div id="form_nueva_pelicula"></div>
-
-    <h3>Nueva Reseña</h3>
-
-    <form onsubmit="sendReseña(event)">
-      <div class="contenedor-input">
-        <label> Pelicula <span class="req">*</span> </label>
-        <select
-          name="id_pelicula"
-          id="pelicula-select"
-          onChange="loadFormMovie(false)"
-          required
-        >
-          <option value="">--Please choose an option--</option>
-        </select>
-        <span onclick="loadFormMovie(true)">Cargar nueva pelicula</span>
-      </div>
-
-      <div class="contenedor-input">
-        <label> Puntaje <span class="req">*</span> </label>
-        <input type="text" name="puntaje" id="puntaje" required />
-      </div>
-
-      <div class="contenedor-input">
-        <label> Reseña <span class="req">*</span> </label>
-        <input type="text" name="reseña_corta" id="reseña_corta" required />
-      </div>
-
-      <input type="submit" id="button_submit" value="Crear" />
-      <a href="/">
-        <input type="button" value="cancel" />
-      </a>
-    </form>
-
     <script src="index.js"></script>
   </body>
 </html>

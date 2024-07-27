@@ -4,24 +4,22 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="style.css" />
-    <title>TP Intro</title>
+    <title>CineCritics</title>
   </head>
   <body>
-    <h1>Titulo de la pagina</h1>
-    <!-- Contenido de los Formularios -->
+    <h1>CineCritics</h1>
     <div class="contenido-tab">
-      <!-- Iniciar Sesion -->
       <div id="iniciar-sesion" class="container-form active">
-        <h1>Iniciar Sesión</h1>
-        <form onsubmit="loginSubmit(event)">
+        <h2>Iniciar Sesión</h2>
+        <form class="form" onsubmit="loginSubmit(event)">
           <div class="contenedor-input">
-            <label> Usuario <span class="req">*</span> </label>
+            <label>Usuario<span class="req">*</span> </label>
             <input type="text" name="userName" required />
           </div>
 
           <input
             type="submit"
-            class="button button-block"
+            class="button"
             value="Iniciar Sesión"
           />
         </form>
@@ -31,22 +29,19 @@
         </p>
       </div>
 
-      <!-- Registrarse -->
       <div id="registrarse" class="container-form">
-        <h1>Registrarse</h1>
-        <form onsubmit="registerSubmit(event)">
-          <div class="fila-arriba">
-            <div class="contenedor-input">
-              <label> Nombre <span class="req">*</span> </label>
-              <input name="nombre" type="text" required />
-            </div>
+        <h2>Registrarse</h2>
+        <form class="form" onsubmit="registerSubmit(event)">
+          <div class="contenedor-input">
+            <label>Nombre<span class="req">*</span> </label>
+            <input name="nombre" type="text" required />
           </div>
           <div class="contenedor-input">
-            <label> Edad <span class="req">*</span> </label>
+            <label>Edad<span class="req">*</span> </label>
             <input name="edad" type="number" required />
           </div>
           <div class="contenedor-input">
-            <label> Genero <span class="req">*</span> </label>
+            <label>Genero<span class="req">*</span> </label>
             <select name="genero" id="pelicula-select" required>
               <option value="">--Please choose an option--</option>
               <option value="masculino">Masculino</option>
@@ -69,5 +64,4 @@
 
     <script src="index.js"></script>
   </body>
-  
 </html>

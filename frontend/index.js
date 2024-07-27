@@ -47,11 +47,11 @@ async function parse_data(content) {
     reseñaTd.innerHTML = content[index].reseña_corta;
     accionTd.innerHTML =
       `
-        <div>
-          <i class="fa fa-edit" onclick='window.location.replace("http://127.0.0.1:5500/frontend/reseña/?id=` +
+        <div class="buttonIconContainer">
+          <i class="fa fa-edit buttonIcon" onclick='window.location.replace("http://localhost:8000/reseña/?id=` +
       content[index].id +
       `")'></i>
-          <i class="fa fa-trash" onclick="deleteReseña(` +
+          <i class="fa fa-trash buttonIcon" onclick="deleteReseña(` +
       content[index].id +
       `)"></i>
         </div>`;
@@ -96,7 +96,9 @@ function deleteReseña(idReseña) {
 }
 
 function fetchReseñas() {
-  fetch("http://localhost:5000/reseñas")
+  fetch(
+    "http://localhost:5000/reseñas/usuario/" + localStorage.getItem("userId")
+  )
     .then(response_received)
     .then(parse_data)
     .catch(request_error);

@@ -27,40 +27,43 @@ function loadFormMovie(activeForm) {
   if (activeForm) {
     selectPelicula.selectedIndex = 0;
     container.innerHTML = `
-          <h3>Nueva Pelicula</h3>
-          <form onsubmit="sendPelicula(event)">
+          <h2>Nueva Pelicula</h2>
+          <form class="form" onsubmit="sendPelicula(event)">
             <div class="contenedor-input">
               <label>
-                nombre <span class="req">*</span>
+                nombre<span class="req">*</span>
               </label>
               <input name="nombre" type="text">
             </div>
             <div class="contenedor-input">
               <label>
-                director <span class="req">*</span>
+                director<span class="req">*</span>
               </label>
               <input name="director" type="text">
             </div>
             <div class="contenedor-input">
               <label>
-                año de estreno <span class="req">*</span>
+                año de estreno<span class="req">*</span>
               </label>
               <input name="año_estreno" type="number">
             </div>
             <div class="contenedor-input">
               <label>
-                genero <span class="req">*</span>
+                genero<span class="req">*</span>
               </label>
               <input name="genero" type="text">
             </div>
+            
             <div class="contenedor-input">
               <label>
-                imagen <span class="req">*</span>
+                imagen<span class="req">*</span>
               </label>
               <input type="file" accept="image/*" name="imagen" onchange="imageUploaded()">
             </div>
-            <input type="submit" value="Cargar pelicula">
-            <input type="button" value="Cancel"  onClick="loadFormMovie(false)">
+            <div class="contenedor-buttons">
+              <input class="button" type="submit" value="Cargar pelicula">
+              <input class="button" type="button" value="Cancel"  onClick="loadFormMovie(false)">
+            </div>
           </form>`;
   } else {
     container.innerHTML = "";
@@ -200,7 +203,7 @@ const sendReseña = (e) => {
   )
     .then((Result) => Result.json())
     .then((data) => {
-      window.location.replace("http://127.0.0.1:5500/frontend/");
+      window.location.replace("http://localhost:8000/frontend/");
     })
     .catch((errorMsg) => {
       console.log(errorMsg);
