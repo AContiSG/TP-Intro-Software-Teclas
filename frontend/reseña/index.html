@@ -33,29 +33,47 @@
         <label>
           Puntaje <span class="req">*</span>
         </label>
-        <input type="text" name="puntaje" required>
+        <input type="text" name="puntaje" id="puntaje" required>
       </div>
 
       <div class="contenedor-input">
         <label>
           Reseña <span class="req">*</span>
         </label>
-        <input type="text" name="reseña_corta" required>
+        <input type="text" name="reseña_corta" id="reseña_corta" required>
       </div>
 
-      <input type="submit" class="" value="Iniciar Sesión">
+      <input type="submit" id="button_submit" value="Crear">
       <a href="/">
         <input type="button" value="cancel" />
       </a>
     </form>
 
     <script>
+      let params = new URLSearchParams(document.location.search);
+      let id = params.get("id"); 
+      console.log(id)
       if(!localStorage.getItem("userId")){
         window.location.replace("http://localhost:8000/login");
       }
       loadMoviesOptions();
       let base64String = "";
+      
     
+      function fetchReseñas() {
+        fetch("http://localhost:5000/reseñas/"+id) 
+          .then(response_received)   
+          .then(loadReseñaData)       
+          .catch(request_error)    
+      }
+
+      function loadReseñaData(content) {
+        document.getElementById("pelicula-select").value = content.id_pelicula;
+        document.getElementById("puntaje").value = content.puntaje;
+        document.getElementById("reseña_corta").value = content.reseña_corta;
+        document.getElementById("button_submit").value = "modificar"
+      }
+
       function loadFormMovie(activeForm){
         const selectPelicula = document.getElementById("pelicula-select");
         const container = document.getElementById("form_nueva_pelicula");
@@ -147,8 +165,6 @@
         reader.readAsDataURL(file);
       }
       
-      
-
       function response_received(response) {
         return response.json()
       }
@@ -160,6 +176,7 @@
           const item = document.createElement("option");
           item.setAttribute("value", content[index].id);
           item.innerHTML = content[index].año_estreno + " - " + content[index].nombre + " - " + content[index].director
+          
           container.append(item);
         }
       }
@@ -172,7 +189,8 @@
       function loadMoviesOptions(){
         fetch("http://localhost:5000/peliculas") 
         .then(response_received)   
-        .then(parse_data)       
+        .then(parse_data)
+        .then(id && fetchReseñas())       
         .catch(request_error)
       }
                 
@@ -206,6 +224,7 @@
       };
 
       const sendReseña = (e) => {
+        e.preventDefault()
         e.preventDefault();
         const formData = new FormData(e.target);
         const formProps = Object.fromEntries(formData);
@@ -213,8 +232,8 @@
           ...formProps,
           id_usuario: localStorage.getItem("userId"),
         }
-        fetch('http://localhost:5000/reseñas', {
-          method: 'POST',
+        fetch(id ? 'http://localhost:5000/reseñas/'+id : 'http://localhost:5000/reseñas', {
+          method:  id ? 'PUT' : 'POST',
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
@@ -223,8 +242,7 @@
         })
         .then(Result => Result.json())
         .then(data => {
-          console.log(data);    
-          // your code comes here
+          window.location.replace("http://127.0.0.1:5500/frontend/");
         })
         .catch(errorMsg => {
           console.log(errorMsg);

@@ -411,7 +411,7 @@ def modificar_reseña_id(id_resena):
 @app.route("/reseñas/<id_resena>", methods=["DELETE"])
 def eliminar_reseña_id(id_resena):
     try:
-        reseña = db.session.query(reseña).filter_by(id=id_resena).one_or_none()
+        reseña = db.session.query(Reseña).filter_by(id=id_resena).one_or_none()
         if not reseña:
             return jsonify({"message": "No se encontró la reseña"}), 404
 
