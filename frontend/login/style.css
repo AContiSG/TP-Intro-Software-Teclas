@@ -2,7 +2,7 @@ body {
   background-color: #212529;
 }
 
-.container-form{
+.container-form {
   display: none;
   flex-direction: column;
   align-items: center;
@@ -16,14 +16,14 @@ label {
   position: absolute;
   transform: translateY(6px);
   left: 13px;
-  color: rgba(#fff,.5);
+  color: rgba(#fff, 0.5);
   transition: all 0.25s ease;
   pointer-events: none;
   font-size: 22px;
-  
+
   .req {
-      margin: 2px;
-      color: #1ab188;
+    margin: 2px;
+    color: #1ab188;
   }
 }
 
@@ -31,9 +31,9 @@ label.active {
   transform: translateY(50px);
   left: 2px;
   font-size: 14px;
-  
+
   .req {
-      opacity: 0;
+    opacity: 0;
   }
 }
 
@@ -58,8 +58,8 @@ input {
   border-radius: 5px;
   color: #fff;
   &:focus {
-      outline: none;
-      border-color: #1ab188;
+    outline: none;
+    border-color: #1ab188;
   }
 }
 
@@ -72,7 +72,7 @@ input {
   font-size: 2rem;
   background: #1ab188;
   color: #fff;
-  transition: all .5s ease;
+  transition: all 0.5s ease;
 }
 
 .button-block {

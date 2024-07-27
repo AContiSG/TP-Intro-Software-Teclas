@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html lang="es">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TP</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
   </head>
 
-<body data-bs-theme="dark">
+  <body data-bs-theme="dark">
     <div class="header">
       <div>
         <h2>Reseñas de <span id="nombre_user"></span></h2>
         <span onclick="logout()">LogOut</span>
       </div>
-      <a href="/reseña" class="btn btn-success">Nueva reseña</a>      
+      <a href="/reseña" class="btn btn-success">Nueva reseña</a>
     </div>
 
     <table class="table" id="reseñas-table">
-      <thead >
+      <thead>
         <tr>
           <th>Imagen</th>
           <th>Nombre</th>
@@ -31,115 +33,19 @@
           <th>Accion</th>
         </tr>
       </thead>
-      <tbody>
-      </tbody>
+      <tbody></tbody>
     </table>
 
     <div class="container">
-        <div class="row g-4" id="peliculas">
-        </div>
+      <div class="row g-4" id="peliculas"></div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous">
-    </script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
 
-    <script>
-      if(localStorage.getItem("userId")){
-        document.getElementById("nombre_user").innerHTML = localStorage.getItem("userNombre");
-        fetchReseñas()
-      }else{
-        window.location.replace("http://localhost:8000/login");
-      }
-      
-      function logout(){
-        localStorage.clear();
-        window.location.replace("http://localhost:8000/login");
-      }
-
-        function response_received(response) {
-            return response.json()
-        }
-
-        async function  parse_data(content) {
-            const container = document.getElementById("reseñas-table").getElementsByTagName('tbody')[0];
-            console.log(container)
-            for (let index = 0; index < content.length; index++) {
-              const tr = document.createElement("tr");
-              const pelicula_data = await fetch("http://localhost:5000/peliculas/"+content[index].id_pelicula) 
-              .then(response_received)   
-              .catch(request_error)
-              
-              const imagenTd = document.createElement("td");
-              const nombreTd = document.createElement("td");
-              const añoEstrenoTd = document.createElement("td");
-              const generoTd = document.createElement("td");
-              const directorTd = document.createElement("td");
-              const puntajeTd = document.createElement("td");
-              const reseñaTd = document.createElement("td");
-              const accionTd = document.createElement("td");
-              const imagenPelicula = new Image();
-              imagenPelicula.src = pelicula_data.imagen;
-              imagenTd.append(imagenPelicula)
-              nombreTd.innerHTML = pelicula_data.nombre
-              añoEstrenoTd.innerHTML = pelicula_data.año_estreno
-              generoTd.innerHTML = pelicula_data.genero
-              directorTd.innerHTML = pelicula_data.director
-              puntajeTd.innerHTML = content[index].puntaje
-              reseñaTd.innerHTML = content[index].reseña_corta
-              accionTd.innerHTML = `
-              <div>
-                <i class="fa fa-edit" onclick='window.location.replace("http://127.0.0.1:5500/frontend/reseña/?id=`+content[index].id+`")'></i>
-                <i class="fa fa-trash" onclick="deleteReseña(`+content[index].id+`)"></i>
-              </div>`
-
-              tr.append(imagenTd);
-              tr.append(nombreTd);
-              tr.append(añoEstrenoTd);
-              tr.append(generoTd);
-              tr.append(directorTd);
-              tr.append(puntajeTd);
-              tr.append(reseñaTd);
-              tr.append(accionTd);
-
-              console.log(pelicula_data)
-              container.append(tr);
-            }
-        }
-
-        function request_error(error) {
-            console.log("ERROR")
-            console.log(error);
-        }
-
-        function deleteReseña(idReseña) {
-          fetch('http://localhost:5000/reseñas/'+idReseña, {
-          method: 'DELETE',
-          mode: 'cors',
-	        headers: {
-            	'Access-Control-Allow-Origin': '*',
-        	}
-        })
-        .then(Result => Result.json())
-        .then(data => {
-          document.getElementById("reseñas-table").getElementsByTagName('tbody')[0].innerHTML="";
-          fetchReseñas()
-        })
-        .catch(errorMsg => {
-          console.log(errorMsg);
-        });
-        }
-
-        function fetchReseñas() {
-          fetch("http://localhost:5000/reseñas") 
-            .then(response_received)   
-            .then(parse_data)       
-            .catch(request_error)    
-        }
-
-        
-    </script>
-</body>
-
+    <script src="index.js"></script>
+  </body>
 </html>
