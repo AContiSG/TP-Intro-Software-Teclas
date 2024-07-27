@@ -351,6 +351,26 @@ def obtener_reseña_id(id_resena):
         return jsonify({"mensaje": error}), 500
 
 
+@app.route("/reseñas/usuario/<id_usuario>")
+def obtener_reseñas_usuario(id_usuario):
+    try:
+        reseñas = db.session.query(Reseña).filter_by(id_usuario=id_usuario)
+        reseñas_data = []
+        for reseña in reseñas:
+            reseña_data = {
+                "id": reseña.id,
+                "id_usuario": reseña.id_usuario,
+                "id_pelicula": reseña.id_pelicula,
+                "puntaje": reseña.puntaje,
+                "reseña_corta": reseña.reseña_corta,
+            }
+            reseñas_data.append(reseña_data)
+        return jsonify(reseñas_data), 200
+    except Exception as error:
+        print(error)
+        return jsonify({"mensaje": error}), 500
+
+
 @app.route("/reseñas", methods=["POST"])
 def nueva_reseña():
     try:
