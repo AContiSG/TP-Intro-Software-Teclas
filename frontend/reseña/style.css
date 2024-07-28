@@ -38,7 +38,6 @@ h2 {
     border: none;
     border-radius: 5px;
     width: 90%;
-    color: white;
   }
 
   input::file-selector-button {
