@@ -48,6 +48,12 @@ h2 {
     padding: 10px;
     text-align: center;
   }
+
+  img {
+    width: 80px;
+    height: 120px;
+    object-fit: fill;
+  }
 }
 
 .header {
@@ -71,11 +77,11 @@ h2 {
   background: #106b53;
 }
 
-.buttonIconContainer{
+.buttonIconContainer {
   gap: 20px;
 }
 
-.buttonIcon{
-  color:#1ab188;
+.buttonIcon {
+  color: #1ab188;
   cursor: pointer;
 }
