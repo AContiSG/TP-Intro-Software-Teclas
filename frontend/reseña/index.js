@@ -203,7 +203,7 @@ const sendReseña = (e) => {
   )
     .then((Result) => Result.json())
     .then((data) => {
-      window.location.replace("http://localhost:8000/frontend/");
+      window.location.replace("http://localhost:8000/");
     })
     .catch((errorMsg) => {
       console.log(errorMsg);
