@@ -12,3 +12,8 @@
 
 -   Windows: `venv\Scripts\activate`
 -   Linux: `source .venv/bin/activate`
+
+### Correr la página:
+
+-   Frontend: en la carpeta frontend `python -m http.server`
+-   Backend: `.../venv/Scripts/python.exe .../backend/main.py`
